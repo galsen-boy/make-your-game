@@ -106,7 +106,6 @@ function updatePlayer(){
   setPosition($player, bound(STATE.x_pos), boundY(STATE.y_pos));
   
 }
-// function moveAlienToRight()
 
 
 // gestion des touches
