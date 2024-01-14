@@ -1,0 +1,41 @@
+.grid {
+	display: grid;
+	grid-template-columns: repeat(15, 1fr);
+  }
+  
+  .grid div {
+	width: 60px;
+	height: 60px;
+	/* border: 1px solid #ccc; */
+  }
+  
+  .shooter {
+	background: url('img/player.png');
+	background-size: cover;
+  }
+  
+  .invader {
+	background: url('img/enemy1.png') no-repeat center center;
+	 /* background-size: cover;  */
+  }
+  
+  .laser {
+	background: url('img/laser2.png') no-repeat center center;
+  }
+  
+
+   
+  .results {
+	text-align: center;
+	font-size: 24px;
+  }
+  body{
+    background:url(img/background-blue.png);
+    background-size: cover;
+    overflow: hidden;
+
+    
+
+}
+  
+
