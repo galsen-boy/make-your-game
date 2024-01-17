@@ -16,6 +16,8 @@ const ENEMY_VERTICAL_PADDING = 70;
 const ENEMY_VERTICAL_SPACING = 80;
 const ENEMY_COOLDOWN = 40;
 const resultsDisplay = document.querySelector('.results')
+const livesDisplay = document.querySelector('.live')
+
 const GAME_STATE = {
   lastTime: Date.now(),
   leftPressed: false,
@@ -224,6 +226,8 @@ function updateEnemyLasers(dt, $container) {
       destroyLaser($container, laser);
     }
   }
+  livesDisplay.innerHTML = "Lives: " + lives
+
   console.log(lives);
   GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead);
 }
@@ -256,13 +260,11 @@ function update(e) {
 
   if (GAME_STATE.gameOver) {
     document.querySelector(".game-over").style.display = "block";
-    clearInterval(timerVariable)
     return;
   }
 
   if (playerHasWon()) {
     document.querySelector(".congratulations").style.display = "block";
-    clearInterval(timerVariable)
     return;
   }
 
@@ -295,20 +297,10 @@ function onKeyUp(e) {
     GAME_STATE.spacePressed = false;
   }
 }
-var timerVariable = setInterval(countUpTimer, 1000);
-var totalSeconds = 0;
-
-function countUpTimer() {
-  ++totalSeconds;
-  var hour = Math.floor(totalSeconds / 3600);
-  var minute = Math.floor((totalSeconds - hour * 3600) / 60);
-  var seconds = totalSeconds - (hour * 3600 + minute * 60);
-  document.getElementById('count_up_timer').innerHTML =
-      hour + ':' + minute + ':' + seconds;
-}
 
 init();
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
 window.requestAnimationFrame(update);
 // console.log(id  )
+
