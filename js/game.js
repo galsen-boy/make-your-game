@@ -1,6 +1,12 @@
+// on doit changer dt et utiliser des constantes
+// https://developer.mozilla.org/fr/docs/Web/API/Window/cancelAnimationFrame
+
+
 const KEY_CODE_LEFT = 37;
 const KEY_CODE_RIGHT = 39;
 const KEY_CODE_SPACE = 32;
+const KEY_CODE_ESCAPE = 27
+let escapePressed = false;
 var score =0;
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -267,6 +273,12 @@ function update(e) {
     document.querySelector(".congratulations").style.display = "block";
     return;
   }
+  if (escapePressed) {
+    document.querySelector(".pause-menu").style.display = "block";
+    pauseTimer()
+  // ids = window.requestAnimationFrame(update) 
+  // window.mozCancelAnimationFrame(ids)
+  }
 
   const $container = document.querySelector(".game");
   updatePlayer(dt, $container);
@@ -285,6 +297,8 @@ function onKeyDown(e) {
     GAME_STATE.rightPressed = true;
   } else if (e.keyCode === KEY_CODE_SPACE) {
     GAME_STATE.spacePressed = true;
+  } else if (e.keyCode === KEY_CODE_ESCAPE) {
+    escapePressed = true;
   }
 }
 
@@ -296,11 +310,36 @@ function onKeyUp(e) {
   } else if (e.keyCode === KEY_CODE_SPACE) {
     GAME_STATE.spacePressed = false;
   }
+  // } else if (e.keyCode === KEY_CODE_ESCAPE) {
+  //   escapePressed = false;
+  // }
+}
+
+var timerVariable = setInterval(countUpTimer, 1000);
+var totalSeconds = 0;
+
+function countUpTimer() {
+  ++totalSeconds;
+  var hour = Math.floor(totalSeconds / 3600);
+  var minute = Math.floor((totalSeconds - hour * 3600) / 60);
+  var seconds = totalSeconds - (hour * 3600 + minute * 60);
+  document.getElementById('count_up_timer').innerHTML =
+      hour + ':' + minute + ':' + seconds;
+}
+function pauseTimer() {
+  clearInterval(timerVariable);
+}
+
+function resumeTimer() {
+  document.querySelector(".pause-menu").style.display = "none";
+  timerVariable = setInterval(countUpTimer, 1000);
+  escapePressed = false;
+  window.requestAnimationFrame(ids)
+
 }
 
 init();
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
 window.requestAnimationFrame(update);
-// console.log(id  )
 
