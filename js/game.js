@@ -1,21 +1,21 @@
 const KEY_CODE_LEFT = 37;
 const KEY_CODE_RIGHT = 39;
 const KEY_CODE_SPACE = 32;
-
+var score =0;
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 
 const PLAYER_WIDTH = 20;
 const PLAYER_MAX_SPEED = 600.0;
-const LASER_MAX_SPEED = 900.0;
+const LASER_MAX_SPEED = 300.0;
 const LASER_COOLDOWN = 0.5;
 
 const ENEMIES_PER_ROW = 10;
 const ENEMY_HORIZONTAL_PADDING = 80;
 const ENEMY_VERTICAL_PADDING = 70;
 const ENEMY_VERTICAL_SPACING = 80;
-const ENEMY_COOLDOWN = 5.0;
-
+const ENEMY_COOLDOWN = 40;
+const resultsDisplay = document.querySelector('.results')
 const GAME_STATE = {
   lastTime: Date.now(),
   leftPressed: false,
@@ -29,6 +29,7 @@ const GAME_STATE = {
   enemyLasers: [],
   gameOver: false
 };
+var lives = 5;
 
 function rectsIntersect(r1, r2) {
   return !(
@@ -71,6 +72,7 @@ function createPlayer($container) {
 
 function destroyPlayer($container, player) {
   $container.removeChild(player);
+
   GAME_STATE.gameOver = true;
   const audio = new Audio("sound/sfx-lose.ogg");
   audio.play();
@@ -119,7 +121,7 @@ function updateLasers(dt, $container) {
   for (let i = 0; i < lasers.length; i++) {
     const laser = lasers[i];
     laser.y -= dt * LASER_MAX_SPEED;
-    if (laser.y < 0) {
+    if (laser.y < 1) {
       destroyLaser($container, laser);
     }
     setPosition(laser.$element, laser.x, laser.y);
@@ -153,7 +155,7 @@ function createEnemy($container, x, y) {
   const enemy = {
     x,
     y,
-    cooldown: rand(0.5, ENEMY_COOLDOWN),
+    cooldown: rand(0.1, ENEMY_COOLDOWN),
     $element
   };
   GAME_STATE.enemies.push(enemy);
@@ -182,6 +184,11 @@ function updateEnemies(dt, $container) {
 function destroyEnemy($container, enemy) {
   $container.removeChild(enemy.$element);
   enemy.isDead = true;
+  if (enemy.isDead){
+    score++
+    resultsDisplay.innerHTML = "SCORE: " + score
+  }
+  console.log(score)
 }
 
 function createEnemyLaser($container, x, y) {
@@ -206,14 +213,21 @@ function updateEnemyLasers(dt, $container) {
     const r1 = laser.$element.getBoundingClientRect();
     const player = document.querySelector(".player");
     const r2 = player.getBoundingClientRect();
+    
     if (rectsIntersect(r1, r2)) {
       // Player was hit
-      destroyPlayer($container, player);
-      break;
+      lives--;
+      if (lives <= 0) {
+        destroyPlayer($container, player);
+        break;
+      }
+      destroyLaser($container, laser);
     }
   }
+  console.log(lives);
   GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead);
 }
+
 
 function init() {
   const $container = document.querySelector(".game");
@@ -228,6 +242,8 @@ function init() {
       createEnemy($container, x, y);
     }
   }
+  console.log(score)
+
 }
 
 function playerHasWon() {
@@ -282,3 +298,4 @@ init();
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
 window.requestAnimationFrame(update);
+// console.log(id  )
