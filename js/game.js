@@ -262,22 +262,25 @@ function playerHasWon() {
 
 function update(e) {
   const currentTime = Date.now();
-  const dt = (currentTime - GAME_STATE.lastTime) / 1000.0;
+  const dt = 0.02
+  // const dt = (currentTime - GAME_STATE.lastTime) / 1000.0;
 
   if (GAME_STATE.gameOver) {
     document.querySelector(".game-over").style.display = "block";
+    pauseTimer();
     return;
   }
 
   if (playerHasWon()) {
     document.querySelector(".congratulations").style.display = "block";
+    pauseTimer();
     return;
   }
   if (escapePressed) {
     document.querySelector(".pause-menu").style.display = "block";
     pauseTimer()
-  // ids = window.requestAnimationFrame(update) 
-  // window.mozCancelAnimationFrame(ids)
+  ids = window.requestAnimationFrame(update) 
+  window.mozCancelAnimationFrame(ids)
   }
 
   const $container = document.querySelector(".game");
