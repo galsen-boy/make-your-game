@@ -293,10 +293,7 @@ function update(e) {
     return;
   }
   if (escapePressed) {
-    document.querySelector(".pause-menu").style.display = "block";
-    pauseTimer()
-  ids = window.requestAnimationFrame(update) 
-  window.mozCancelAnimationFrame(ids)
+   escapeHandle()
   }
 
   const $container = document.querySelector(".game");
@@ -308,7 +305,12 @@ function update(e) {
   GAME_STATE.lastTime = currentTime;
   window.requestAnimationFrame(update);
 }
-
+function escapeHandle() {
+  document.querySelector(".pause-menu").style.display = "block";
+  pauseTimer()
+ids = window.requestAnimationFrame(update) 
+window.mozCancelAnimationFrame(ids)
+}
 function onKeyDown(e) {
   if (e.keyCode === KEY_CODE_LEFT) {
     GAME_STATE.leftPressed = true;

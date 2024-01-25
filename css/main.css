@@ -103,7 +103,7 @@ background-color:#2e8ece00;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   text-align: center;
-  animation: pop-in 1s;
+  /* animation: pop-in 1s; */
   
 }
 
@@ -116,7 +116,7 @@ background-color:#2e8ece00;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   text-align: center;
-  animation: pop-in 1s;
+  /* animation: pop-in 1s; */
 }
 
 .game-over {
@@ -128,7 +128,7 @@ background-color:#2e8ece00;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   text-align: center;
-  animation: pop-in 1s;
+  /* animation: pop-in 1s; */
 }
 .btn-resume {
   /* display: flex; */
