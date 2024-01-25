@@ -13,8 +13,10 @@ const GAME_HEIGHT = 600;
 
 const PLAYER_WIDTH = 20;
 const PLAYER_MAX_SPEED = 600.0;
-const LASER_MAX_SPEED = 300.0;
-const LASER_COOLDOWN = 0.5;
+var LASER_PLAYER_MAX_SPEED = 500.0;
+const LASER_PLAYER_COOLDOWN = 0.3;
+var laserEnemySpeed = 300
+var laserEnemyCooldown = 12
 
 const ENEMIES_PER_ROW = 10;
 const ENEMY_HORIZONTAL_PADDING = 80;
@@ -102,7 +104,7 @@ function updatePlayer(dt, $container) {
 
   if (GAME_STATE.spacePressed && GAME_STATE.playerCooldown <= 0) {
     createLaser($container, GAME_STATE.playerX, GAME_STATE.playerY);
-    GAME_STATE.playerCooldown = LASER_COOLDOWN;
+    GAME_STATE.playerCooldown = LASER_PLAYER_COOLDOWN;
   }
   if (GAME_STATE.playerCooldown > 0) {
     GAME_STATE.playerCooldown -= dt;
@@ -119,8 +121,8 @@ function createLaser($container, x, y) {
   $container.appendChild($element);
   const laser = { x, y, $element };
   GAME_STATE.lasers.push(laser);
-  const audio = new Audio("sound/sfx-laser1.ogg");
-  audio.play();
+  const audio1 = new Audio("sound/sfx-laser1.ogg");
+  audio1.play();
   setPosition($element, x, y);
 }
 
@@ -128,7 +130,7 @@ function updateLasers(dt, $container) {
   const lasers = GAME_STATE.lasers;
   for (let i = 0; i < lasers.length; i++) {
     const laser = lasers[i];
-    laser.y -= dt * LASER_MAX_SPEED;
+    laser.y -= dt * LASER_PLAYER_MAX_SPEED;
     if (laser.y < 1) {
       destroyLaser($container, laser);
     }
@@ -143,12 +145,15 @@ function updateLasers(dt, $container) {
         // Enemy was hit
         destroyEnemy($container, enemy);
         destroyLaser($container, laser);
+        const audio2 = new Audio("sound/Space Invaders_sounds_InvaderBullet.wav");
+        audio2.play();
         break;
       }
     }
   }
   GAME_STATE.lasers = GAME_STATE.lasers.filter(e => !e.isDead);
 }
+
 
 function destroyLaser($container, laser) {
   $container.removeChild(laser.$element);
@@ -163,7 +168,7 @@ function createEnemy($container, x, y) {
   const enemy = {
     x,
     y,
-    cooldown: rand(0.1, ENEMY_COOLDOWN),
+    cooldown: rand(0, laserEnemyCooldown),
     $element
   };
   GAME_STATE.enemies.push(enemy);
@@ -183,7 +188,7 @@ function updateEnemies(dt, $container) {
     enemy.cooldown -= dt;
     if (enemy.cooldown <= 0) {
       createEnemyLaser($container, x, y);
-      enemy.cooldown = ENEMY_COOLDOWN;
+      enemy.cooldown = laserEnemyCooldown;
     }
   }
   GAME_STATE.enemies = GAME_STATE.enemies.filter(e => !e.isDead);
@@ -192,7 +197,10 @@ function updateEnemies(dt, $container) {
 function destroyEnemy($container, enemy) {
   $container.removeChild(enemy.$element);
   enemy.isDead = true;
+ 
   if (enemy.isDead){
+    laserEnemySpeed +=18
+    laserEnemyCooldown -=0.4
     score++
     resultsDisplay.innerHTML = "SCORE: " + score
   }
@@ -213,7 +221,7 @@ function updateEnemyLasers(dt, $container) {
   const lasers = GAME_STATE.enemyLasers;
   for (let i = 0; i < lasers.length; i++) {
     const laser = lasers[i];
-    laser.y += dt * LASER_MAX_SPEED;
+    laser.y += dt * laserEnemySpeed;
     if (laser.y > GAME_HEIGHT) {
       destroyLaser($container, laser);
     }
@@ -225,7 +233,13 @@ function updateEnemyLasers(dt, $container) {
     if (rectsIntersect(r1, r2)) {
       // Player was hit
       lives--;
+      if (lives >0) {
+        const audio3 = new Audio("sound/audio_brick_destroy.wav");
+        audio3.play();
+      }
       if (lives <= 0) {
+        const audio4 = new Audio("sound/sounds_explosion.wav");
+        audio4.play();
         destroyPlayer($container, player);
         break;
       }
@@ -273,6 +287,8 @@ function update(e) {
 
   if (playerHasWon()) {
     document.querySelector(".congratulations").style.display = "block";
+    const audio5 = new Audio("sound/Game_assets_win.wav");
+    audio5.play();
     pauseTimer();
     return;
   }
@@ -326,7 +342,7 @@ function countUpTimer() {
   var hour = Math.floor(totalSeconds / 3600);
   var minute = Math.floor((totalSeconds - hour * 3600) / 60);
   var seconds = totalSeconds - (hour * 3600 + minute * 60);
-  document.getElementById('count_up_timer').innerHTML =
+  document.getElementById('count_up_timer').innerHTML = "Time: " + 
       hour + ':' + minute + ':' + seconds;
 }
 function pauseTimer() {
