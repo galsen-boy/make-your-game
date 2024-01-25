@@ -19,7 +19,8 @@ header {
   text-align: center;
   background: black;
   color: #fff;
-  padding: 10px;
+  padding: 0px;
+  height: 10px;
 }
 
 footer {
@@ -53,6 +54,16 @@ footer {
   to {
     background-position-y: 256px;
   }
+}
+.tableau {
+  text-shadow:0 0 4px #FF0000,0 0 50px #FF0000,0px 0px 14px #FF0000, 0 0 100px #FF0000, 0 0 150px #FF0000, 0 0 150px #FF0000, 0 0 550px #CA0000, 0 0 250px #CA0000, 0 0 350px #CA0000, 0 0 250px #CA0000;color:#FFD000;
+background-color:#2e8ece00;
+  color: #eee;
+  display: flex;
+  justify-content: space-between;
+}
+.timer.results.live {
+  color: #eee;
 }
 
 .game .enemy {
