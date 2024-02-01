@@ -2,6 +2,7 @@
 // https://developer.mozilla.org/fr/docs/Web/API/Window/cancelAnimationFrame
 
 
+// Declarations des tous les elements du jeu
 const KEY_CODE_LEFT = 37;
 const KEY_CODE_RIGHT = 39;
 const KEY_CODE_SPACE = 32;
@@ -39,7 +40,7 @@ const GAME_STATE = {
   enemyLasers: [],
   gameOver: false
 };
-var lives = 5;
+ var lives = 5;
 
 function rectsIntersect(r1, r2) {
   return !(
@@ -50,11 +51,13 @@ function rectsIntersect(r1, r2) {
   );
 }
 
+// Fixation dela position d'un élément HTML.
 function setPosition(el, x, y) {
   el.style.transform = `translate(${x}px, ${y}px)`;
 }
 
-function clamp(v, min, max) {
+// Permet de contrôler les valeurs pour éviter qu'elles ne sortent des limites autorisées entre le min et le max.
+function limite(v, min, max) {
   if (v < min) {
     return min;
   } else if (v > max) {
@@ -64,12 +67,14 @@ function clamp(v, min, max) {
   }
 }
 
+// cette fonction genere un nombre aleatoire entre le min e le max
 function rand(min, max) {
   if (min === undefined) min = 0;
   if (max === undefined) max = 1;
   return min + Math.random() * (max - min);
 }
 
+// creation de notre player
 function createPlayer($container) {
   GAME_STATE.playerX = GAME_WIDTH / 2;
   GAME_STATE.playerY = GAME_HEIGHT - 50;
@@ -80,6 +85,7 @@ function createPlayer($container) {
   setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY);
 }
 
+// supprime notre player apres collision avec un laser ennemie
 function destroyPlayer($container, player) {
   $container.removeChild(player);
 
@@ -88,6 +94,20 @@ function destroyPlayer($container, player) {
   audio.play();
 }
 
+// creation des lasers player/ennemies
+function createLaser($container, x, y) {
+  const $element = document.createElement("img");
+  $element.src = "img/laser-blue-1.png";
+  $element.className = "laser";
+  $container.appendChild($element);
+  const laser = { x, y, $element };
+  GAME_STATE.lasers.push(laser);
+  const audio1 = new Audio("sound/sfx-laser1.ogg");
+  audio1.play();
+  setPosition($element, x, y);
+}
+
+// Mis a jour de la position du player 
 function updatePlayer(dt, $container) {
   if (GAME_STATE.leftPressed) {
     GAME_STATE.playerX -= dt * PLAYER_MAX_SPEED;
@@ -96,7 +116,7 @@ function updatePlayer(dt, $container) {
     GAME_STATE.playerX += dt * PLAYER_MAX_SPEED;
   }
 
-  GAME_STATE.playerX = clamp(
+  GAME_STATE.playerX = limite(
     GAME_STATE.playerX,
     PLAYER_WIDTH,
     GAME_WIDTH - PLAYER_WIDTH
@@ -114,18 +134,7 @@ function updatePlayer(dt, $container) {
   setPosition(player, GAME_STATE.playerX, GAME_STATE.playerY);
 }
 
-function createLaser($container, x, y) {
-  const $element = document.createElement("img");
-  $element.src = "img/laser-blue-1.png";
-  $element.className = "laser";
-  $container.appendChild($element);
-  const laser = { x, y, $element };
-  GAME_STATE.lasers.push(laser);
-  const audio1 = new Audio("sound/sfx-laser1.ogg");
-  audio1.play();
-  setPosition($element, x, y);
-}
-
+// Met à jour les positions des lasers des joueurs et vérifie les collisions avec les ennemis.
 function updateLasers(dt, $container) {
   const lasers = GAME_STATE.lasers;
   for (let i = 0; i < lasers.length; i++) {
@@ -142,7 +151,7 @@ function updateLasers(dt, $container) {
       if (enemy.isDead) continue;
       const r2 = enemy.$element.getBoundingClientRect();
       if (rectsIntersect(r1, r2)) {
-        // Enemy was hit
+        // Ennemi touché
         destroyEnemy($container, enemy);
         destroyLaser($container, laser);
         const audio2 = new Audio("sound/Space Invaders_sounds_InvaderBullet.wav");
@@ -154,12 +163,13 @@ function updateLasers(dt, $container) {
   GAME_STATE.lasers = GAME_STATE.lasers.filter(e => !e.isDead);
 }
 
-
+// suppression des lasers player/ennemi
 function destroyLaser($container, laser) {
   $container.removeChild(laser.$element);
   laser.isDead = true;
 }
 
+// creation des ennemis et gere le temps a lequel un ennemi peut tirer
 function createEnemy($container, x, y) {
   const $element = document.createElement("img");
   $element.src = "img/enemy-blue-1.png";
@@ -175,10 +185,10 @@ function createEnemy($container, x, y) {
   setPosition($element, x, y);
 }
 
+// Actualise les positions ennemies et déclenche la création de lasers ennemis.
 function updateEnemies(dt, $container) {
   const dx = Math.sin(GAME_STATE.lastTime / 1000.0) * 50;
   const dy = Math.cos(GAME_STATE.lastTime / 1000.0) * 10;
-
   const enemies = GAME_STATE.enemies;
   for (let i = 0; i < enemies.length; i++) {
     const enemy = enemies[i];
@@ -194,6 +204,7 @@ function updateEnemies(dt, $container) {
   GAME_STATE.enemies = GAME_STATE.enemies.filter(e => !e.isDead);
 }
 
+// Détruit un ennemi, incrémente le score et ajuste la difficulté du jeu.
 function destroyEnemy($container, enemy) {
   $container.removeChild(enemy.$element);
   enemy.isDead = true;
@@ -207,6 +218,7 @@ function destroyEnemy($container, enemy) {
   console.log(score)
 }
 
+// Crée un laser ennemi
 function createEnemyLaser($container, x, y) {
   const $element = document.createElement("img");
   $element.src = "img/laser-red-5.png";
@@ -217,6 +229,7 @@ function createEnemyLaser($container, x, y) {
   setPosition($element, x, y);
 }
 
+// mis a jour des positions des lasers ennemis et vérifie les collisions avec le joueur
 function updateEnemyLasers(dt, $container) {
   const lasers = GAME_STATE.enemyLasers;
   for (let i = 0; i < lasers.length; i++) {
@@ -252,7 +265,7 @@ function updateEnemyLasers(dt, $container) {
   GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead);
 }
 
-
+// Initialisation du jeu en creant le joueur et les ennemis
 function init() {
   const $container = document.querySelector(".game");
   createPlayer($container);
@@ -270,10 +283,12 @@ function init() {
 
 }
 
+// Verifie si le player a gagner
 function playerHasWon() {
   return GAME_STATE.enemies.length === 0;
 }
 
+// c'est la fonction principale
 function update(e) {
   const currentTime = Date.now();
   const dt = 0.02
@@ -301,16 +316,19 @@ function update(e) {
   updateLasers(dt, $container);
   updateEnemies(dt, $container);
   updateEnemyLasers(dt, $container);
-
   GAME_STATE.lastTime = currentTime;
   window.requestAnimationFrame(update);
 }
+
+// Affiche et met en pause la minuterie et annule le cadre d'animation
 function escapeHandle() {
   document.querySelector(".pause-menu").style.display = "block";
   pauseTimer()
 ids = window.requestAnimationFrame(update) 
 window.mozCancelAnimationFrame(ids)
 }
+
+// manipulation des evenements de frappe
 function onKeyDown(e) {
   if (e.keyCode === KEY_CODE_LEFT) {
     GAME_STATE.leftPressed = true;
@@ -331,14 +349,13 @@ function onKeyUp(e) {
   } else if (e.keyCode === KEY_CODE_SPACE) {
     GAME_STATE.spacePressed = false;
   }
-  // } else if (e.keyCode === KEY_CODE_ESCAPE) {
-  //   escapePressed = false;
-  // }
+
 }
 
 var timerVariable = setInterval(countUpTimer, 1000);
 var totalSeconds = 0;
 
+// Incrémente le temps total de jeu et l'affiche.
 function countUpTimer() {
   ++totalSeconds;
   var hour = Math.floor(totalSeconds / 3600);
@@ -347,10 +364,13 @@ function countUpTimer() {
   document.getElementById('count_up_timer').innerHTML = "Time: " + 
       hour + ':' + minute + ':' + seconds;
 }
+
+// Pause la minuterie quand le jeu est interrompu.
 function pauseTimer() {
   clearInterval(timerVariable);
 }
 
+// Reprend la minuterie quand le jeu reprend.
 function resumeTimer() {
   document.querySelector(".pause-menu").style.display = "none";
   timerVariable = setInterval(countUpTimer, 1000);
@@ -363,4 +383,3 @@ init();
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
 window.requestAnimationFrame(update);
-
