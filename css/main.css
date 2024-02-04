@@ -47,14 +47,14 @@ footer {
   position: relative;
 }
 
-@keyframes scroll-background {
+/* @keyframes scroll-background {
   from {
     background-position-y: 0px;
   }
   to {
     background-position-y: 256px;
   }
-}
+} */
 .tableau {
   text-shadow:0 0 4px #FF0000,0 0 50px #FF0000,0px 0px 14px #FF0000, 0 0 100px #FF0000, 0 0 150px #FF0000, 0 0 150px #FF0000, 0 0 550px #CA0000, 0 0 250px #CA0000, 0 0 350px #CA0000, 0 0 250px #CA0000;color:#FFD000;
 background-color:#2e8ece00;

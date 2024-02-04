@@ -260,8 +260,6 @@ function updateEnemyLasers(dt, $container) {
     }
   }
   livesDisplay.innerHTML = "Lives: " + lives
-
-  console.log(lives);
   GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead);
 }
 
@@ -279,7 +277,6 @@ function init() {
       createEnemy($container, x, y);
     }
   }
-  console.log(score)
 
 }
 
