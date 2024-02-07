@@ -1,8 +1,4 @@
-// on doit changer dt et utiliser des constantes
-// https://developer.mozilla.org/fr/docs/Web/API/Window/cancelAnimationFrame
-
-
-// Declarations des tous les elements du jeu
+// Declarations de tous les elements du jeu 
 const KEY_CODE_LEFT = 37;
 const KEY_CODE_RIGHT = 39;
 const KEY_CODE_SPACE = 32;
@@ -51,7 +47,7 @@ function rectsIntersect(r1, r2) {
   );
 }
 
-// Fixation dela position d'un élément HTML.
+// Fixation de la position d'un élément HTML.
 function setPosition(el, x, y) {
   el.style.transform = `translate(${x}px, ${y}px)`;
 }
