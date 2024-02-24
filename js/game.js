@@ -1,4 +1,5 @@
 // Declarations de tous les elements du jeu 
+const audio3 = new Audio("sound/audio_brick_destroy.wav");
 const KEY_CODE_LEFT = 37;
 const KEY_CODE_RIGHT = 39;
 const KEY_CODE_SPACE = 32;
@@ -150,8 +151,8 @@ function updateLasers(dt, $container) {
         // Ennemi touché
         destroyEnemy($container, enemy);
         destroyLaser($container, laser);
-        const audio2 = new Audio("sound/Space Invaders_sounds_InvaderBullet.wav");
-        audio2.play();
+        // const audio2 = new Audio("sound/Space Invaders_sounds_InvaderBullet.wav");
+        // audio2.play();
         break;
       }
     }
@@ -231,7 +232,7 @@ function updateEnemyLasers(dt, $container) {
   for (let i = 0; i < lasers.length; i++) {
     const laser = lasers[i];
     laser.y += dt * laserEnemySpeed;
-    if (laser.y > GAME_HEIGHT) {
+    if (laser.y > GAME_HEIGHT-55 ) {
       destroyLaser($container, laser);
     }
     setPosition(laser.$element, laser.x, laser.y);
@@ -243,7 +244,6 @@ function updateEnemyLasers(dt, $container) {
       // Player was hit
       lives--;
       if (lives >0) {
-        const audio3 = new Audio("sound/audio_brick_destroy.wav");
         audio3.play();
       }
       if (lives <= 0) {
